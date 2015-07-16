@@ -7,6 +7,8 @@ If you are looking for a readable stream that reads *sequentially* from other st
 npm install multi-read-stream
 ```
 
+[![build status](http://img.shields.io/travis/mafintosh/multi-read-stream.svg?style=flat)](http://travis-ci.org/mafintosh/multi-read-stream)
+
 ## Usage
 
 ``` js
