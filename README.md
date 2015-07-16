@@ -1,6 +1,7 @@
 # multi-read-stream
 
-Readable stream that reads from multiple readable streams at the same time
+Readable stream that reads from multiple readable streams at the same time.
+If you are looking for a readable stream that reads *sequentially* from other streams checkout [multistream](https://github.com/feross/multistream)
 
 ```
 npm install multi-read-stream
