@@ -40,6 +40,14 @@ stream constructor.
 
 Same as above but sets `objectMode = true`
 
+#### `stream.add(stream)`
+
+Add a stream after creating the multi reader
+
+#### `stream.remove(stream)`
+
+Remove a stream after creating the multi reader
+
 ## License
 
 MIT
