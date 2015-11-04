@@ -1,6 +1,6 @@
 {
   "name": "multi-read-stream",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Readable stream that reads from multiple readable streams at the same time",
   "main": "index.js",
   "dependencies": {
