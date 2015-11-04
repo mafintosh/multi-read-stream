@@ -47,3 +47,19 @@ tape('one can be slow', function (t) {
     t.end()
   }))
 })
+
+tape('add later', function (t) {
+  var a = from.obj(['a1'])
+  var b = from.obj(['a2', 'b2', 'c2'])
+
+  var rs = multi.obj([b])
+
+  rs.once('data', function () {
+    rs.add(a)
+  })
+
+  rs.pipe(concat({encoding: 'list'}, function (list) {
+    t.same(list.sort(), ['a1', 'a2', 'b2', 'c2'], 'multi output')
+    t.end()
+  }))
+})

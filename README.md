@@ -34,17 +34,24 @@ rs.on('end', function () {
 #### `stream = multi(arrayOfReadableStreams, [options])`
 
 Create a new multi read stream. Options are forwarded to the
-stream constructor.
+stream constructor. Other options include:
+
+``` js
+{
+  autoDestroy: true, // destroy the stream if a child stream errors
+  end: true // end the stream when all child streams end
+}
+```
 
 #### `objStream = multi.obj(arrayOfReadableStreams, [options])`
 
 Same as above but sets `objectMode = true`
 
-#### `stream.add(stream)`
+#### `stream.add(otherStream)`
 
 Add a stream after creating the multi reader
 
-#### `stream.remove(stream)`
+#### `stream.remove(otherStream)`
 
 Remove a stream after creating the multi reader
 

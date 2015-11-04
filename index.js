@@ -5,23 +5,39 @@ module.exports = MultiRead
 
 function MultiRead (streams, opts) {
   if (!(this instanceof MultiRead)) return new MultiRead(streams, opts)
+  if (!streams) streams = []
+
+  if (streams && !Array.isArray(streams)) {
+    opts = streams
+    streams = []
+  }
+
+  if (!opts) opts = {}
+
   stream.Readable.call(this, opts)
 
   this.streams = streams
   this.destroyed = false
 
-  this._finalize = !opts || opts.end !== false
+  this._finalize = opts.end !== false
   this._ptr = 0
   this._forward = false
   this._add = add
+  this._onclose = onclose
+  this._onerror = onerror
+  this._onreadable = onreadable
+  this._onend = onend
 
+  var autoDestroy = opts.autoDestroy !== false
   var self = this
   streams.forEach(add)
 
   function add (s) {
     s.on('readable', onreadable)
-    s.on('error', onerror)
-    s.on('close', onclose)
+    if (autoDestroy) {
+      s.on('error', onerror)
+      s.on('close', onclose)
+    }
     s.on('end', onend)
   }
 
@@ -45,6 +61,7 @@ function MultiRead (streams, opts) {
 util.inherits(MultiRead, stream.Readable)
 
 MultiRead.obj = function (streams, opts) {
+  if (streams && !Array.isArray(streams)) return MultiRead.obj([], streams)
   if (!opts) opts = {}
   opts.objectMode = true
   return new MultiRead(streams, opts)
@@ -57,6 +74,10 @@ MultiRead.prototype.finalize = function () {
 MultiRead.prototype.remove = function (stream) {
   var i = this.streams.indexOf(stream)
   this.streams.splice(i, 1)
+  stream.removeListener('readable', this._onreadable)
+  stream.removeListener('close', this._onclose)
+  stream.removeListener('error', this._onerror)
+  stream.removeListener('end', this._onend)
   if (i < this._ptr) this._ptr--
   if (!this.streams.length && this._finalize) this.finalize()
 }
