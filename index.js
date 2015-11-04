@@ -34,10 +34,8 @@ function MultiRead (streams, opts) {
 
   function add (s) {
     s.on('readable', onreadable)
-    if (autoDestroy) {
-      s.on('error', onerror)
-      s.on('close', onclose)
-    }
+    s.on('error', onerror)
+    s.on('close', onclose)
     s.on('end', onend)
   }
 
@@ -46,11 +44,13 @@ function MultiRead (streams, opts) {
   }
 
   function onclose () {
-    self.destroy()
+    if (autoDestroy) self.destroy()
+    else self.remove(this)
   }
 
   function onerror (err) {
-    self.destroy(err)
+    if (autoDestroy) self.destroy(err)
+    else self.remove(this)
   }
 
   function onreadable () {
@@ -101,6 +101,8 @@ MultiRead.prototype.destroy = function (err) {
 }
 
 MultiRead.prototype._read = function () {
+  if (this.destroyed) return
+
   var forward = true
   var more = true
   var length = this.streams.length // we need to save this as onend mutates the list
@@ -113,6 +115,7 @@ MultiRead.prototype._read = function () {
       var data = stream.read()
       if (!data) continue
       more = forward = this.push(data)
+      if (this.destroyed) return
     }
   }
 
