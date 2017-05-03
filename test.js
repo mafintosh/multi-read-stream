@@ -63,3 +63,29 @@ tape('add later', function (t) {
     t.end()
   }))
 })
+
+tape('remove existing', function (t) {
+  var a = from.obj(['a1'])
+  var b = from.obj(['a2', 'b2', 'c2'])
+
+  var rs = multi.obj([a, b])
+  rs.remove(a)
+
+  rs.pipe(concat({encoding: 'list'}, function (list) {
+    t.same(list, ['a2', 'b2', 'c2'], 'multi output')
+    t.end()
+  }))
+})
+
+tape('remove non-existing', function (t) {
+  var a = from.obj(['a1'])
+  var b = from.obj(['a2', 'b2', 'c2'])
+
+  var rs = multi.obj([b])
+  rs.remove(a)
+
+  rs.pipe(concat({encoding: 'list'}, function (list) {
+    t.same(list, ['a2', 'b2', 'c2'], 'multi output')
+    t.end()
+  }))
+})
