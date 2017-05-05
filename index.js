@@ -73,6 +73,7 @@ MultiRead.prototype.finalize = function () {
 
 MultiRead.prototype.remove = function (stream) {
   var i = this.streams.indexOf(stream)
+  if (i === -1) return
   this.streams.splice(i, 1)
   stream.removeListener('readable', this._onreadable)
   stream.removeListener('close', this._onclose)
@@ -83,6 +84,7 @@ MultiRead.prototype.remove = function (stream) {
 }
 
 MultiRead.prototype.add = function (stream) {
+  if (this.destroyed) return
   this.streams.push(stream)
   this._add(stream)
   if (this._forward) this._read()
