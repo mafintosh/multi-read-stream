@@ -84,6 +84,7 @@ MultiRead.prototype.remove = function (stream) {
 }
 
 MultiRead.prototype.add = function (stream) {
+  if (this.destroyed) return
   this.streams.push(stream)
   this._add(stream)
   if (this._forward) this._read()
